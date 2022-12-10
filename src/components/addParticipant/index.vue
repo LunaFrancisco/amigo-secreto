@@ -1,4 +1,4 @@
-<template lang="">
+<template>
  <div class="content ">
     <div class="title">
         <h1>Amigo Secreto</h1>
