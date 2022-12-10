@@ -1,11 +1,9 @@
 <script setup lang="ts">
+import Participantes from "@/components/addParticipant/index.vue";
 
 </script>
 
 <template>
-  <main>
-    <h1>Amigo Secreto</h1>
-    <p>proximamente...</p>
-  </main>
+    <Participantes/>
 </template>
 
