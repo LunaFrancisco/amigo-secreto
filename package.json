@@ -2,6 +2,7 @@
   "name": "amigo-secreto",
   "version": "0.0.0",
   "private": true,
+  "homepage": "https://lunafrancisco.github.io/amigo-secreto/",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
