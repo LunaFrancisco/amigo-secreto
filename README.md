@@ -1,6 +1,8 @@
 # amigo-secreto
 
-This template should help get you started developing with Vue 3 in Vite.
+Aplicación desarrollada en Vue3 e implementada en github pages para sortear participantes para el juego del Amigo Secreto.
+
+https://lunafrancisco.github.io/amigo-secreto/
 
 ## Recommended IDE Setup
 
