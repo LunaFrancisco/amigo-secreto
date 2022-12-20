@@ -11,7 +11,7 @@
         </label>
         <label>
             Email:
-            <input v-model="newUser.datos" type="datos"  placeholder="correo@mail.com"/>
+            <input v-model="newUser.email" type="email"  placeholder="correo@mail.com"/>
         </label>
         <Button color="White" text="Agregar" @click="emitButton"></Button>
         <Button  v-if="isShown" color="Green" text="Sortear" @click="sortear"></Button>
@@ -21,7 +21,7 @@
         <div class="users-content">
             <div v-for="user in data" :key="user.id" class="user" >
                 <p>{{user.name}}</p>
-                <p style="margin-left:2rem">{{user.datos}}</p>
+                <p style="margin-left:2rem">{{user.email}}</p>
                 <Button class="Red" @click="deleteUser" text="Eliminar"></Button>
             </div>
         </div>
@@ -37,7 +37,9 @@ import emailjs from 'emailjs-com';
 
 const newUser = ref({
     name: '',
-    datos: ''
+    email: '',
+    secretFriend: '',
+    clues:[]
 })
 
 const isShown = ref(false)
@@ -46,7 +48,7 @@ const useStore = useParticipantes();
 const data = useStore.datos;
 
 const emitButton = () => {
-    if(newUser.value.name && newUser.value.datos){   
+    if(newUser.value.name && newUser.value.email){   
         useStore.addUser(newUser.value)
         resetObject()
         shown()
@@ -70,7 +72,9 @@ const deleteUser = () => {
 const resetObject = () => {
     newUser.value = {
         name: '',
-        datos: ''
+        email: '',
+        secretFriend: '',
+        clues:[]
     }
 }
 
@@ -84,9 +88,10 @@ const sortear = () => {
   for (let i = 0; i < personas.length; i++) {
     let persona = personas[i];
     let asignado = personas[(i + 1) % personas.length];
+    persona.secretFriend = asignado.name;
     parejas.push([persona, asignado]);
 }
-    enviarEmail(parejas);
+     // enviarEmail(parejas);
 }
 
 const enviarEmail = (parejas) => {
@@ -95,7 +100,7 @@ const enviarEmail = (parejas) => {
             const templateParams = {
                     name: duo[0].name,
                     message: duo[1].name,
-                    email: duo[0].datos,
+                    email: duo[0].email,
                 };
                 console.log(templateParams)
             emailjs.send(import.meta.env.VITE_SERVICE_ID, import.meta.env.VITE_YOUR_TEMPLATE_ID, templateParams,import.meta.env.VITE_PUBLIC_KEY)
