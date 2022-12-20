@@ -11,6 +11,7 @@ actions:{
     addUser(value:any ){   
         //@ts-ignore
         this.datos.push(value);
+
     },      
     deleteUser(value:any){
         //@ts-ignore

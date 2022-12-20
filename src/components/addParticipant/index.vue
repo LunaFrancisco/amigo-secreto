@@ -7,22 +7,23 @@
     <div class="formulario">
         <label>
             Nombre:
-            <input v-model="newUser.name" type="text"  placeholder="Juan Perez"/>
+            <input v-model="newUser.name" type="text"  placeholder="Jhon Doe"/>
         </label>
         <label>
-            Email o numero de telefono:
-            <input v-model="newUser.datos" type="datos"  placeholder="Email o numero de telefono"/>
+            Email:
+            <input v-model="newUser.datos" type="datos"  placeholder="correo@mail.com"/>
         </label>
-        <!-- <button @click="emitButton" type="submit">Agregar usuario</button> -->
         <Button color="White" text="Agregar" @click="emitButton"></Button>
-        <Button  v-if="isShown" color="Green" text="Sortear" @click="emitButton"></Button>
+        <Button  v-if="isShown" color="Green" text="Sortear" @click="sortear"></Button>
     </div>
     <div v-if="isShown" class="users">    
         <h1>Agregados</h1>
-        <div v-for="user in data" :key="user.id" class="user" >
-            <p>{{user.name}}</p>
-            <p style="margin-left:2rem">{{user.datos}}</p>
-            <Button class="Red" @click="deleteUser" text="Eliminar"></Button>
+        <div class="users-content">
+            <div v-for="user in data" :key="user.id" class="user" >
+                <p>{{user.name}}</p>
+                <p style="margin-left:2rem">{{user.datos}}</p>
+                <Button class="Red" @click="deleteUser" text="Eliminar"></Button>
+            </div>
         </div>
     </div>
     </div>
@@ -32,6 +33,7 @@
 import { ref } from 'vue'
 import {useParticipantes} from '@/stores/participantes'
 import Button from "@/components/Button/index.vue";
+import emailjs from 'emailjs-com';
 
 const newUser = ref({
     name: '',
@@ -41,9 +43,9 @@ const newUser = ref({
 const isShown = ref(false)
 
 const useStore = useParticipantes();
-const data = useStore.datos
+const data = useStore.datos;
+
 const emitButton = () => {
-    //TODO: validar que no este vacio
     if(newUser.value.name && newUser.value.datos){   
         useStore.addUser(newUser.value)
         resetObject()
@@ -71,6 +73,46 @@ const resetObject = () => {
         datos: ''
     }
 }
+
+const sortear = () => {
+    let personas = data
+    personas.sort(function() {
+    return 0.5 - Math.random();
+  });
+
+  let parejas = [];
+  for (let i = 0; i < personas.length; i++) {
+    let persona = personas[i];
+    let asignado = personas[(i + 1) % personas.length];
+    parejas.push([persona, asignado]);
+}
+    enviarEmail(parejas);
+}
+
+const enviarEmail = (parejas) => {
+    parejas.map((duo)=>{
+        try{
+            const templateParams = {
+                    name: duo[0].name,
+                    message: duo[1].name,
+                    email: duo[0].datos,
+                };
+                console.log(templateParams)
+            emailjs.send(import.meta.env.VITE_SERVICE_ID, import.meta.env.VITE_YOUR_TEMPLATE_ID, templateParams,import.meta.env.VITE_PUBLIC_KEY)
+                .then((response) => {
+                console.log('SUCCESS!', response.status, response.text);
+                }, (err) => {
+                console.log('FAILED...', err);
+                });
+        }
+        catch(err)
+        {
+            console.log(err)
+        }
+        
+    })
+    alert("Se ha notificado a los participantes");
+}
 </script>
 <style>
 .content {
@@ -90,6 +132,7 @@ input{
 }
 .users{
     margin: 5rem;
+    text-align: center;
 }
 .title h1{
     font-size: 2.5rem;
@@ -99,5 +142,11 @@ input{
     align-items: center;
     flex-direction: column;
     padding-bottom: 4rem;
+}
+.users-content{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-height: 600px;
 }
 </style>
